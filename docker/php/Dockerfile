@@ -1,0 +1,14 @@
+# ใช้ PHP 8.2-FPM เป็น Image พื้นฐาน
+FROM php:8.2-fpm
+
+# ติดตั้งส่วนเสริมที่ CI4 ต้องการ
+RUN apt-get update && apt-get install -y \
+    libicu-dev \
+    libzip-dev \
+    unzip \
+    && docker-php-ext-install intl pdo_mysql mysqli zip
+
+# ติดตั้ง Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html

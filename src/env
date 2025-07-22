@@ -1,0 +1,6 @@
+database.default.hostname = localhost
+database.default.database = smiv
+database.default.username = root
+database.default.password = @#Smiv2  # ใส่รหัสผ่านที่คุณตั้งในขั้นตอนที่ 2
+database.default.DBDriver = MySQLi
+database.default.port = 3306

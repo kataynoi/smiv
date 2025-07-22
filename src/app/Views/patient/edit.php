@@ -1,0 +1,111 @@
+<?php
+// --------------------------------------------------------------------
+// File: app/Views/patient/edit.php (สร้างไฟล์ใหม่)
+// --------------------------------------------------------------------
+// ฟอร์มสำหรับแก้ไขข้อมูลผู้ป่วย
+// --------------------------------------------------------------------
+?>
+<?= $this->extend('layout/default') ?>
+
+<?= $this->section('title') ?>
+แก้ไขข้อมูลผู้ป่วย
+<?= $this->endSection() ?>
+
+<?= $this->section('content') ?>
+<div class="container-fluid px-4">
+    <h1 class="mt-4">แก้ไขข้อมูลผู้ป่วย</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="<?= site_url('dashboard') ?>">แดชบอร์ด</a></li>
+        <li class="breadcrumb-item"><a href="<?= site_url('patients') ?>">รายชื่อผู้ป่วย</a></li>
+        <li class="breadcrumb-item active">แก้ไขข้อมูล</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-edit me-1"></i>
+            แก้ไขข้อมูล: <?= esc($patient['firstname']) ?> <?= esc($patient['lastname']) ?>
+        </div>
+        <div class="card-body">
+            
+            <?php if(session()->get('errors')): ?>
+                <div class="alert alert-danger">
+                    <ul>
+                    <?php foreach (session()->get('errors') as $error) : ?>
+                        <li><?= esc($error) ?></li>
+                    <?php endforeach ?>
+                    </ul>
+                </div>
+            <?php endif ?>
+
+            <form action="<?= site_url('patients/update/' . $patient['id']) ?>" method="post">
+                <?= csrf_field() ?>
+                <input type="hidden" name="_method" value="PUT"> <!-- สำหรับ Method Spoofing -->
+
+                <h5 class="mt-4">ส่วนที่ 1: ข้อมูลทั่วไป</h5>
+                <hr>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="id_card" class="form-label">เลขบัตรประชาชน <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="id_card" name="id_card" value="<?= old('id_card', $patient['id_card']) ?>" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="firstname" class="form-label">ชื่อ <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="firstname" name="firstname" value="<?= old('firstname', $patient['firstname']) ?>" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="lastname" class="form-label">นามสกุล <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="lastname" name="lastname" value="<?= old('lastname', $patient['lastname']) ?>" required>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="birthdate" class="form-label">วันเกิด</label>
+                        <input type="date" class="form-control" id="birthdate" name="birthdate" value="<?= old('birthdate', $patient['birthdate']) ?>">
+                    </div>
+                     <div class="col-md-4">
+                        <label for="phone_number" class="form-label">เบอร์โทรศัพท์</label>
+                        <input type="text" class="form-control" id="phone_number" name="phone_number" value="<?= old('phone_number', $patient['phone_number']) ?>">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="address_text" class="form-label">ที่อยู่ปัจจุบัน</label>
+                    <textarea class="form-control" id="address_text" name="address_text" rows="3"><?= old('address_text', $patient['address_text']) ?></textarea>
+                </div>
+
+                <h5 class="mt-4">ส่วนที่ 2: ข้อมูลการนำเข้าสู่ระบบ</h5>
+                <hr>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="screening_date" class="form-label">วันที่คัดกรอง <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="screening_date" name="screening_date" value="<?= old('screening_date', $patient['screening_date']) ?>" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="entry_type_id" class="form-label">ประเภทการนำเข้าบำบัด <span class="text-danger">*</span></label>
+                        <select class="form-select" id="entry_type_id" name="entry_type_id" required>
+                            <option value="">-- กรุณาเลือก --</option>
+                            <?php foreach($entry_types as $type): ?>
+                                <option value="<?= $type['id'] ?>" <?= old('entry_type_id', $patient['entry_type_id']) == $type['id'] ? 'selected' : '' ?>><?= $type['name'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="risk_level_id" class="form-label">ระดับความเสี่ยง</label>
+                        <select class="form-select" id="risk_level_id" name="risk_level_id" required>
+                             <?php foreach($risk_levels as $level): ?>
+                                <option value="<?= $level['id'] ?>" <?= old('risk_level_id', $patient['risk_level_id']) == $level['id'] ? 'selected' : '' ?>><?= $level['name'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">อัปเดตข้อมูล</button>
+                    <a href="<?= site_url('patients') ?>" class="btn btn-secondary">ยกเลิก</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<?= $this->endSection() ?>
