@@ -27,10 +27,10 @@ services:
     ports: # <--- เพิ่มส่วนนี้เข้ามา
       - "3306:3306" # <--- กำหนดการเชื่อม Port (Host:Container)
     environment:
-      MYSQL_DATABASE: smiv_db
-      MYSQL_USER: smiv
-      MYSQL_PASSWORD: 1234
-      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: xxxx_db
+      MYSQL_USER: xxxx
+      MYSQL_PASSWORD: xxxx
+      MYSQL_ROOT_PASSWORD: xxxx
     volumes:
       - db_data:/var/lib/mysql # <-- แก้ไข path ให้สมบูรณ์
 
