@@ -8,7 +8,16 @@ class UserModel extends Model
     protected $table = 'users'; // ชื่อตารางในฐานข้อมูล
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
-    protected $allowedFields = ['fullname', 'username', 'password', 'role'];
+    protected $returnType       = 'array';
+    protected $allowedFields    = [
+        'fullname',
+        'username',
+        'position',
+        'password',
+        'status',
+        'ampurcodefull',
+        'approved_by'
+    ];
 
     // เปิดใช้งาน Timestamps เพื่อให้ created_at, updated_at ทำงานอัตโนมัติ
     protected $useTimestamps = true; 
@@ -19,7 +28,10 @@ class UserModel extends Model
     protected $beforeInsert = ['hashPassword'];
     protected $beforeUpdate = ['hashPassword'];
 
-    protected function hashPassword(array $data)
+    /**
+     * ทำการ Hash รหัสผ่านโดยอัตโนมัติ
+     */
+    protected function hashPassword(array $data): array
     {
         if (!isset($data['data']['password'])) {
             return $data;

@@ -1,13 +1,4 @@
 
-<?php
-// --------------------------------------------------------------------
-// File: app/Views/patient/index.php (สร้างไฟล์ใหม่)
-// --------------------------------------------------------------------
-// หน้ารายชื่อผู้ป่วยทั้งหมด
-// --------------------------------------------------------------------
-?>
-<?= $this->extend('layout/default') ?>
-
 <?= $this->section('title') ?>
 รายชื่อผู้ป่วยทั้งหมด
 <?= $this->endSection() ?>
@@ -47,32 +38,13 @@
                         <th>เลขบัตรประชาชน</th>
                         <th>ชื่อ-สกุล</th>
                         <th>ระดับความเสี่ยง</th>
-                        <th>ประเภทการนำเข้า</th>
-                        <th>วันที่ลงทะเบียน</th>
+                        <th>ที่อยู่</th>
+                        <th>วันที่ลงทะเบียนx</th>
                         <th>จัดการ</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (!empty($patients)): ?>
-                        <?php foreach ($patients as $patient): ?>
-                            <tr>
-                                <td><?= esc($patient['id_card']) ?></td>
-                                <td><?= esc($patient['firstname']) ?> <?= esc($patient['lastname']) ?></td>
-                                <td>
-                                    <span class="badge" style="background-color: <?= esc($patient['color_hex'] ?? '#6c757d') ?>;">
-                                        <?= esc($patient['risk_level_name']) ?>
-                                    </span>
-                                </td>
-                                <td><?= esc($patient['entry_type_name']) ?></td>
-                                <td><?= date('d/m/Y', strtotime($patient['created_at'])) ?></td>
-                                <td>
-                                    <a href="<?= site_url('patients/show/' . $patient['id']) ?>" class="btn btn-info btn-sm" title="ดูรายละเอียด"><i class="fas fa-eye"></i></a>
-                                    <a href="<?= site_url('patients/edit/' . $patient['id']) ?>" class="btn btn-warning btn-sm" title="แก้ไข"><i class="fas fa-edit"></i></a>
-                                    <a href="<?= site_url('patients/delete/' . $patient['id']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('คุณต้องการลบข้อมูลผู้ป่วยรายนี้ใช่หรือไม่?')" title="ลบ"><i class="fas fa-trash"></i></a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                    <!-- ข้อมูลจะถูกโหลดผ่าน AJAX -->
                 </tbody>
             </table>
         </div>
@@ -88,6 +60,60 @@
 <script>
     $(document).ready(function() {
         $('#patientsTable').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "<?= site_url('patients/ajax-list') ?>",
+                "type": "POST",
+                "data": {
+                    '<?= csrf_token() ?>': '<?= csrf_hash() ?>'
+                }
+            },
+            "columns": [
+                { "data": "id_card" },
+                { 
+                    "data": null,
+                    "render": function ( data, type, row ) {
+                        return row.firstname + ' ' + row.lastname;
+                    }
+                },
+                { 
+                    "data": "risk_level_name",
+                    "render": function ( data, type, row ) {
+                        return '<span class="badge" style="background-color:'+ (row.color_hex || '#6c757d') +';">'+ data +'</span>';
+                    }
+                },
+                { 
+                    "data": null,
+                    "render": function ( data, type, row ) {
+                        return (row.ampurname || '') + ', ' + (row.changwatname || '');
+                    }
+                },
+                { 
+                    "data": "created_at",
+                    "render": function ( data, type, row ) {
+                        let date = new Date(data);
+                        return date.toLocaleDateString('th-TH', {
+                            year: 'numeric', month: 'long', day: 'numeric'
+                        });
+                    }
+                },
+                { 
+                    "data": "id",
+                    "render": function ( data, type, row ) {
+                        var showUrl = "<?= site_url('patients/show/') ?>" + data;
+                        var editUrl = "<?= site_url('patients/edit/') ?>" + data;
+                        var deleteUrl = "<?= site_url('patients/delete/') ?>" + data;
+                        return `
+                            <a href="${showUrl}" class="btn btn-info btn-sm" title="ดูรายละเอียด"><i class="fas fa-eye"></i></a>
+                            <a href="${editUrl}" class="btn btn-warning btn-sm" title="แก้ไข"><i class="fas fa-edit"></i></a>
+                            <a href="${deleteUrl}" class="btn btn-danger btn-sm" onclick="return confirm('คุณต้องการลบข้อมูลผู้ป่วยรายนี้ใช่หรือไม่?')" title="ลบ"><i class="fas fa-trash"></i></a>
+                        `;
+                    },
+                    "orderable": false,
+                    "searchable": false
+                }
+            ],
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/th.json"
             }

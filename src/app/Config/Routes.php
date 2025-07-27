@@ -14,11 +14,24 @@ $routes->get('/dbtest', 'Home::dbtest'); // เพิ่มบรรทัดน
 // --------------------------------------------------------------------
 // กำหนด URL สำหรับระบบ Login
 // --------------------------------------------------------------------
-$routes->get('login', 'AuthController::index');
+// ใน Routes.php
+$routes->get('/login', 'AuthController::index');
 $routes->get('logout', 'AuthController::logout');
-$routes->post('login/attempt', 'AuthController::attemptLogin');
-$routes->get('logout', 'AuthController::logout');
+$routes->post('/login', 'AuthController::attemptLogin');
 $routes->get('/reset-password-for-mana', 'AuthController::resetPassword');
+$routes->get('/products', 'ProductController::index');
+
+// --- Public Routes for Authentication ---
+$routes->get('/register', 'AuthController::register');
+$routes->post('/register', 'AuthController::attemptRegister');
+// (คุณอาจจะมี /login, /logout ที่นี่ด้วย)
+
+// --- AJAX Routes ---
+// สร้าง Group สำหรับ AJAX โดยเฉพาะเพื่อให้จัดการง่าย
+$routes->group('ajax', function ($routes) {
+    $routes->post('get-amphures', 'AuthController::getAmphures');
+    // คุณสามารถย้าย get-tambons, get-villages มาไว้ที่นี่ได้ในอนาคต
+});
 // สร้างกลุ่มของ Route ที่ต้องผ่านการยืนยันตัวตนก่อน
 // ทุก Route ที่อยู่ในกลุ่มนี้จะถูกป้องกันโดย 'auth' filter
 $routes->group('dashboard', ['filter' => 'auth'], function($routes) {
@@ -29,13 +42,32 @@ $routes->group('dashboard', ['filter' => 'auth'], function($routes) {
 //     $routes->get('/', 'Patients::index');
 //     $routes->get('create', 'Patients::create');
 // });
-$routes->group('patients', ['filter' => 'auth'], function($routes) {
-    $routes->get('/', 'PatientsController::index');
-    $routes->get('create', 'PatientsController::create');
-    $routes->post('store', 'PatientsController::store');
-    $routes->get('show/(:num)', 'PatientsController::show/$1');
-    $routes->get('edit/(:num)', 'PatientsController::edit/$1');
-    $routes->post('update/(:num)', 'PatientsController::update/$1'); // ใช้ post สำหรับฟอร์ม
-    $routes->get('delete/(:num)', 'PatientsController::delete/$1');
+// app/Config/Routes.php
+$routes->group('patients', function ($routes) {
+    // CRUD Routes
+    $routes->get('/', 'PatientController::index');
+    $routes->get('fetch', 'PatientController::fetchPatients');
+    $routes->post('store', 'PatientController::store');
+    $routes->get('fetch-one/(:num)', 'PatientController::fetchSinglePatient/$1');
+    $routes->post('update', 'PatientController::update');
+    $routes->post('delete/(:num)', 'PatientController::delete/$1');
+    
+    // Feature Routes
+    $routes->post('update-risk-level', 'PatientController::updateRiskLevel');
+    
+    // AJAX Routes for Dropdowns
+    $routes->post('get-amphures', 'PatientController::getAmphures');
+    $routes->post('get-tambons', 'PatientController::getTambons');
+    $routes->post('get-villages', 'PatientController::getVillages');
 });
 
+
+$routes->group('admin', ['filter' => 'auth'], function ($routes) {
+    // หน้านี้จะเข้าได้เฉพาะ Admin อำเภอ
+    $routes->get('user-approval', 'AdminController::userApproval');
+
+    // AJAX routes for the approval page
+    $routes->get('users/pending', 'AdminController::fetchPendingUsers');
+    $routes->post('users/approve', 'AdminController::processApproval');
+    $routes->post('users/reject/(:num)', 'AdminController::rejectUser/$1');
+});

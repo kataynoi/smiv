@@ -1,4 +1,4 @@
-<?= $this->extend('layout/default2') ?>
+<?= $this->extend('layout/default') ?>
 
 <?= $this->section('title') ?>
 แดชบอร์ด - SMIV CARE
@@ -6,7 +6,10 @@
 
 <?= $this->section('content') ?>
 <div class="container-fluid">
-
+    <?php echo "<pre>";
+    print_r(session()->get()); // แสดงข้อมูลทั้งหมดใน Session
+    echo "</pre>"; ?>
+    <!-- Nav Item - User Information -->
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
@@ -22,7 +25,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold  text-uppercase mb-1">
-                            ผู้ป่วยอาการคงที่ ไม่มีความเสี่ยง(เขียว)</div>
+                                ผู้ป่วยอาการคงที่ ไม่มีความเสี่ยง(เขียว)</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">5,159</div>
                         </div>
                         <div class="col-auto">
@@ -40,7 +43,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-yello text-uppercase mb-1">
-                            ผู้ป่วยมีความเสี่ยงเล็กน้อย ต้องเฝ้าระวัง (เหลือง)</div>
+                                ผู้ป่วยมีความเสี่ยงเล็กน้อย ต้องเฝ้าระวัง (เหลือง)</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">833</div>
                         </div>
                         <div class="col-auto">
@@ -57,20 +60,10 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-custom-yellow text-uppercase mb-1">(ส้ม)
+                            <div class="text-xs font-weight-bold text-custom-yellow text-uppercase mb-1">ผู้ป่วยมีความเสี่ยงปานกลาง ต้องการการดูแลใกล้ชิด(ส้ม)
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">482</div>
                             </div>
-                            <div class="row no-gutters align-items-center">
-                                <div class="col-auto">
-                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
-                                </div>
-                                <div class="col">
-                                    <div class="progress progress-sm mr-2">
-                                        <div class="progress-bar bg-info" role="progressbar"
-                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                            aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                            </div>
+
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
@@ -87,7 +80,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                            ผู้ป่วยมีความเสี่ยงสูงต่อการก่อความรุนแรง(แดง)</div>
+                                ผู้ป่วยมีความเสี่ยงสูงต่อการก่อความรุนแรง(แดง)</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">772</div>
                         </div>
                         <div class="col-auto">

@@ -37,7 +37,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">ทะเบียนผู้ป่วย</h6>
                         <a class="collapse-item" href="<?=site_url('patients')?>">ทะเบียนผู้ป่วย</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
+                        <a class="collapse-item" href="<?=site_url('products')?>">Products</a>
                     </div>
                 </div>
             </li>

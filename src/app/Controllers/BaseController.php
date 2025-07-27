@@ -27,6 +27,9 @@ abstract class BaseController extends Controller
      * @var CLIRequest|IncomingRequest
      */
     protected $request;
+    protected $currentUser = null;
+    protected $currentUserRoles = null;
+    protected $db; // <-- 1. เพิ่ม property นี้
 
     /**
      * An array of helpers to be loaded automatically upon
@@ -49,8 +52,18 @@ abstract class BaseController extends Controller
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
         // Do Not Edit This Line
-        parent::initController($request, $response, $logger);
+        
 
+        parent::initController($request, $response, $logger);
+        $this->db = \Config\Database::connect();
+        if (session()->get('isLoggedIn')) {
+            $this->currentUserRoles = session()->get('roles') ?? [];
+            $this->currentUser      = [
+                'id'            => session()->get('user_id'),
+                'username'      => session()->get('username'),
+                'ampurcodefull' => session()->get('ampurcodefull') // <-- เพิ่มบรรทัดนี้
+            ];
+        }
         // Preload any models, libraries, etc, here.
 
         // E.g.: $this->session = service('session');
